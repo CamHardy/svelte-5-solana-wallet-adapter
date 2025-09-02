@@ -46,7 +46,7 @@
               <li class="flex items-center justify-between gap-3 p-3">
                 <div class="flex items-center gap-3">
                   <img src={p.icon} alt={p.name} class="w-8 h-8">
-                  <div class="leading-tight">
+                  <div class="flex items-center leading-tight">
                     <div class="font-medium">{p.name}</div>
                 		<div class="text-xs text-white/60">{readyLabel(p.ready)}</div>
                   </div>
@@ -54,7 +54,7 @@
                 <div class="flex items-center gap-2">
                   {#if p.ready === 'Installed'}
                     <Button
-                      class="px-3 py-1.5 cursor-pointer"
+                      class="px-3 py-1.5 w-32 cursor-pointer"
                       disabled={connecting}
                       onclick={() => {
 												wallet.connectById(p.id);
@@ -64,7 +64,7 @@
                     </Button>
                   {:else}
                     <Button
-                      class="px-3 py-1.5 cursor-pointer"
+                      class="px-3 py-1.5 w-32 cursor-pointer"
                       href={p.adapter.url}
                       target="_blank"
 											disabled={false}
@@ -79,10 +79,5 @@
           </ul>
         {/if}
       </div>
-
-      <div class="p-3 border-t border-black/10 text-xs text-black/60">
-        You can safely close this dialog at any time.
-      </div>
   </Dialog.Content>
 </Dialog.Root>
-

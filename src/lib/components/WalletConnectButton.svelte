@@ -1,7 +1,7 @@
 <script>
   import { getWallet } from '$lib/context.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import WalletDialog from '$lib/components/WalletConnectDialog.svelte';
+	import WalletConnectDialog from '$lib/components/WalletConnectDialog.svelte';
 
   // grab the wallet client from context
   const wallet = getWallet();
@@ -20,10 +20,10 @@
   }
 </script>
 
-<WalletDialog />
+<WalletConnectDialog />
 
 <Button
-  class="inline-flex cursor-pointer items-center gap-2"
+  class="inline-flex cursor-pointer items-center gap-2 w-36"
   aria-label={connected ? 'Disconnect wallet' : 'Connect wallet'}
   disabled={connecting}
   {onclick}
@@ -34,7 +34,7 @@
 		{:else} 
 			<span>Wallet</span>
 		{/if}
-    <span class="opacity-70">{pubkeyShort}</span>
+    <span>{pubkeyShort}</span>
   {:else}
     <span>{connecting ? 'Connecting…' : 'Connect Wallet'}</span>
   {/if}

@@ -1,10 +1,41 @@
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
-/** @import { Transaction } from '@solana/web3.js' */
+/** @import { Commitment, Transaction } from '@solana/web3.js' */
 import { WalletReadyState, BaseMessageSignerWalletAdapter } from '@solana/wallet-adapter-base';
 /** @import { WalletAdapter } from '@solana/wallet-adapter-base' */
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
+import { waitForSignature } from '$lib/waitForSignature.js';
+
+/** 
+ * @typedef Opts
+ * @property { Connection } connection
+ * @property { (tx: Transaction) => Promise<string> } sendTx
+ * @property { Transaction } tx
+ * @property { PublicKey } feePayer
+ * @property { Commitment } [commitment]
+ * @property { number } [pollMs]
+ * @property { number } [maxMs]
+ */
+/** @param { Opts } opts */
+export async function sendAndWait({
+  connection,
+  sendTx,                     // (tx) => signature (wallet adapter)
+  tx,
+  feePayer,                   // PublicKey (from wallet)
+  commitment = 'confirmed',
+  pollMs = 500,
+  maxMs = 60_000
+}) {
+  // grab a blockhash BEFORE sending, to enable expiry checks
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash({ commitment });
+  tx.recentBlockhash = blockhash;
+  tx.feePayer = feePayer;
+
+  const sig = await sendTx(tx);
+  await waitForSignature({ connection, signature: sig, commitment, lastValidBlockHeight, pollMs, maxMs });
+  return sig;
+}
 
 /**
  * @typedef UiWallet
